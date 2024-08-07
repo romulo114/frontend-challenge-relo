@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
+import imageQueueService, { ImageQueue } from "./services/imageQueueService";
 
 function App() {
+  const [imageQueue, setImageQueue] = useState<ImageQueue[]>([]);
+
+  const fetchImageQueue = async () => {
+    const data = await imageQueueService();
+
+    if (data) {
+      setImageQueue(data);
+    }
+  };
+
+  useEffect(() => {
+    fetchImageQueue();
+  }, []);
+
   return (
     <div className="main-content">
       <h1>Image Analyzer</h1>
@@ -32,16 +47,17 @@ function App() {
       <div className="image-queue">
         <h2>Next images in queue:</h2>
         <ul className="queue-list">
-          <li className="queue-item">Image 1</li>
-          <li className="queue-item">Image 2</li>
-          <li className="queue-item">Image 3</li>
-          <li className="queue-item">Image 4</li>
-          <li className="queue-item">Image 5</li>
-          <li className="queue-item">Image 6</li>
-          <li className="queue-item">Image 7</li>
-          <li className="queue-item">Image 8</li>
-          <li className="queue-item">Image 9</li>
-          <li className="queue-item">Image 10</li>
+          {imageQueue.map((val) => {
+            return (
+              <li key={`item-${val.id}`} className="queue-item">
+                <img
+                  key={`item-image-${val.id}`}
+                  className="queue-image"
+                  src={val.url}
+                />
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
