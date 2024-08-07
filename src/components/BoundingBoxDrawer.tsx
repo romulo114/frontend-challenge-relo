@@ -1,10 +1,5 @@
 import React, { useRef, useState, useEffect, MouseEvent } from "react";
-import { ImageQueue } from "../services/imageQueueService";
 import useImageAnnotationStore from "../stores/imageAnnotationStore";
-
-type Props = {
-  selectedImage: ImageQueue | undefined;
-};
 
 type BoundingBox = {
   startX: number;
@@ -13,13 +8,15 @@ type BoundingBox = {
   endY: number;
 };
 
-const BoundingBoxDrawer = ({ selectedImage }: Props) => {
+const BoundingBoxDrawer = () => {
   const imgWrapperRef = useRef<HTMLDivElement>(null);
   const [boundingBox, setBoundingBox] = useState<BoundingBox | null>(null);
   const [isAnnotate, setIsAnnotate] = useState<boolean>(false);
   const addBoundingBox = useImageAnnotationStore(
     (state) => state.addBoundingBox
   );
+
+  const selectedImage = useImageAnnotationStore((state) => state.selectedImage);
 
   // Handle mouse down event to start drawing bounding box
   const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {

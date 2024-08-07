@@ -18,9 +18,11 @@ type Category = {
 };
 
 type ImageAnnotationState = {
+  queueImages: ImageQueue[];
   selectedImage: ImageQueue | null;
   category: Category | null;
   boundingBoxes: BoundingBox[];
+  setQueueImages: (images: ImageQueue[]) => void;
   setSelectedImage: (image: ImageQueue) => void;
   setCategory: (category: Category) => void;
   addBoundingBox: (boundingBox: BoundingBox) => void;
@@ -28,9 +30,11 @@ type ImageAnnotationState = {
 };
 
 const useImageAnnotationStore = create<ImageAnnotationState>((set) => ({
+  queueImages: [],
   selectedImage: null,
   category: null,
   boundingBoxes: [],
+  setQueueImages: (images) => set({ queueImages: images }),
   setSelectedImage: (image) => set({ selectedImage: image }),
   setCategory: (category) => set({ category }),
   addBoundingBox: (boundingBox) =>
