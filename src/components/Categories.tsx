@@ -8,6 +8,7 @@ const Categories = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [searchCategories, setSearchCategories] = useState<string>("");
   const setCategory = useImageAnnotationStore((state) => state.setCategory);
 
   const selectedCategory = useImageAnnotationStore((state) => state.category);
@@ -49,16 +50,27 @@ const Categories = () => {
   return (
     <div className="sidebar">
       <div className="search-bar">
-        <input type="text" placeholder="Search options..." />
+        <input
+          type="text"
+          placeholder="Search options..."
+          onChange={(e) => {
+            e.preventDefault();
+            setSearchCategories(e.currentTarget.value);
+          }}
+        />
       </div>
       {isLoading && <p>on load...</p>}
       <ul className="options-list">
         {categories.map((val) => {
+          const isHide =
+            searchCategories.length > 0 &&
+            !val.name.toLowerCase().includes(searchCategories.toLowerCase());
+          const isSelected = selectedCategory?.id === val.id;
           return (
             <li
               key={val.id}
-              className={`${
-                selectedCategory?.id === val.id ? "highlight" : ""
+              className={`${isSelected ? "highlight" : ""} ${
+                isHide ? "hidden" : ""
               }`}
               onClick={(e) => {
                 e.preventDefault();

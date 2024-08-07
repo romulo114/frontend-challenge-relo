@@ -114,3 +114,7 @@ body {
   object-fit: cover;
   object-position: center;
 }
+
+.hidden {
+  display: none;
+}
