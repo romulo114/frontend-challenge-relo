@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import "./App.css";
 import imageQueueService from "./services/imageQueueService";
-import BoundingBoxDrawer from "./components/BoundingBoxDrawer";
-import Categories from "./components/Categories";
 import useImageAnnotationStore from "./stores/imageAnnotationStore";
+import BoundingBoxDrawer from "./components/BoundingBoxDrawer/BoundingBoxDrawer";
+import Sidebar from "./components/Sidebar/Sidebar";
 
 function App() {
   const setQueueImages = useImageAnnotationStore(
@@ -35,7 +35,7 @@ function App() {
       <h1>Image Analyzer</h1>
       <div className="analyzer-container">
         <BoundingBoxDrawer />
-        <Categories />
+        <Sidebar />
       </div>
       <div className="image-queue">
         <h2>Next images in queue:</h2>

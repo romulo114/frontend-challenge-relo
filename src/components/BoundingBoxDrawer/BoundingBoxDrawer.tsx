@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, MouseEvent } from "react";
-import useImageAnnotationStore from "../stores/imageAnnotationStore";
+import useImageAnnotationStore from "../../stores/imageAnnotationStore";
 
 const BoundingBoxDrawer = () => {
   const imgWrapperRef = useRef<HTMLDivElement>(null);
