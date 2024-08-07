@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="main-content">
+      <h1>Image Analyzer</h1>
+      <div className="analyzer-container">
+        <div className="image-container">
+          <img
+            src="https://dummyimage.com/280/c4c4c4/ffffff&text=frame"
+            alt="Placeholder for uploaded image"
+          />
+          <div className="annotation"></div>
+        </div>
+        <div className="sidebar">
+          <div className="search-bar">
+            <input type="text" placeholder="Search options..." />
+          </div>
+          <ul className="options-list">
+            <li className="highlight">Option 1</li>
+            <li>Option 2</li>
+            <li>Option 3</li>
+            <li>Option 4</li>
+          </ul>
+          <div className="buttons">
+            <button>Discard</button>
+            <button>Confirm</button>
+          </div>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <div className="image-queue">
+        <h2>Next images in queue:</h2>
+        <ul className="queue-list">
+          <li className="queue-item">Image 1</li>
+          <li className="queue-item">Image 2</li>
+          <li className="queue-item">Image 3</li>
+          <li className="queue-item">Image 4</li>
+          <li className="queue-item">Image 5</li>
+          <li className="queue-item">Image 6</li>
+          <li className="queue-item">Image 7</li>
+          <li className="queue-item">Image 8</li>
+          <li className="queue-item">Image 9</li>
+          <li className="queue-item">Image 10</li>
+        </ul>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
