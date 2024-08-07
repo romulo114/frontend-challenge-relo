@@ -14,12 +14,13 @@ type BoundingBox = {
 };
 
 const BoundingBoxDrawer = ({ selectedImage, onBoundingBoxChange }: Props) => {
-  const imgWrapperRef = useRef<HTMLImageElement>(null);
+  const imgWrapperRef = useRef<HTMLDivElement>(null);
   const [boundingBox, setBoundingBox] = useState<BoundingBox | null>(null);
   const [isAnnotate, setIsAnnotate] = useState<boolean>(false);
 
   // Handle mouse down event to start drawing bounding box
-  const handleMouseDown = (e: MouseEvent<HTMLImageElement>) => {
+  const handleMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (!imgWrapperRef.current) return;
 
     // Get the bounding rectangle of the image
@@ -33,7 +34,8 @@ const BoundingBoxDrawer = ({ selectedImage, onBoundingBoxChange }: Props) => {
   };
 
   // Handle mouse move event to update the bounding box dimensions
-  const handleMouseMove = (e: MouseEvent<HTMLImageElement>) => {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (!boundingBox || !imgWrapperRef.current) return;
 
     // If not in annotation mode, means no need to update the bounding box dimensions
@@ -41,11 +43,16 @@ const BoundingBoxDrawer = ({ selectedImage, onBoundingBoxChange }: Props) => {
 
     // Get the bounding rectangle of the image
     const rect = imgWrapperRef.current.getBoundingClientRect();
-    const endX = e.clientX - rect.left;
-    const endY = e.clientY - rect.top;
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
 
     // Update the bounding box dimensions state
-    setBoundingBox((prev) => (prev ? { ...prev, endX, endY } : null));
+    setBoundingBox({
+      startX: boundingBox.startX,
+      startY: boundingBox.startY,
+      endX: currentX,
+      endY: currentY,
+    });
   };
 
   // Handle mouse up event to finalize the bounding box,
@@ -75,7 +82,11 @@ const BoundingBoxDrawer = ({ selectedImage, onBoundingBoxChange }: Props) => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       className="image-container"
-      style={{ position: "relative" }}
+      style={{
+        position: "relative",
+        userSelect: "none",
+      }}
+      draggable={"false"}
     >
       <img
         src={
@@ -91,10 +102,10 @@ const BoundingBoxDrawer = ({ selectedImage, onBoundingBoxChange }: Props) => {
           style={{
             position: "absolute",
             border: "2px solid red",
-            left: `${boundingBox.startX}px`,
-            top: `${boundingBox.startY}px`,
-            width: `${boundingBox.endX - boundingBox.startX}px`,
-            height: `${boundingBox.endY - boundingBox.startY}px`,
+            left: `${Math.min(boundingBox.startX, boundingBox.endX)}px`,
+            top: `${Math.min(boundingBox.startY, boundingBox.endY)}px`,
+            width: `${Math.abs(boundingBox.endX - boundingBox.startX)}px`,
+            height: `${Math.abs(boundingBox.endY - boundingBox.startY)}px`,
           }}
         />
       )}
