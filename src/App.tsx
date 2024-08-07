@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import imageQueueService, { ImageQueue } from "./services/imageQueueService";
+import categoriesService, { Category } from "./services/categoriesService";
 
 function App() {
   const [imageQueue, setImageQueue] = useState<ImageQueue[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  const fetchImageQueue = async () => {
+  const fetchImageQueues = async () => {
     const data = await imageQueueService();
 
     if (data) {
@@ -13,8 +15,17 @@ function App() {
     }
   };
 
+  const fetchCategories = async () => {
+    const data = await categoriesService();
+
+    if (data) {
+      setCategories(data);
+    }
+  };
+
   useEffect(() => {
-    fetchImageQueue();
+    fetchImageQueues();
+    fetchCategories();
   }, []);
 
   return (
@@ -33,10 +44,13 @@ function App() {
             <input type="text" placeholder="Search options..." />
           </div>
           <ul className="options-list">
-            <li className="highlight">Option 1</li>
-            <li>Option 2</li>
-            <li>Option 3</li>
-            <li>Option 4</li>
+            {categories.map((val) => {
+              return (
+                <li key={val.id} className="">
+                  {val.name}
+                </li>
+              );
+            })}
           </ul>
           <div className="buttons">
             <button>Discard</button>
