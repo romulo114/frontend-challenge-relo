@@ -25,6 +25,10 @@ const Categories = () => {
     (state) => state.boundingBoxes
   );
 
+  const clearAnnotations = useImageAnnotationStore(
+    (state) => state.clearAnnotations
+  );
+
   const fetchCategories = async () => {
     setIsLoading(true);
 
@@ -80,6 +84,7 @@ const Categories = () => {
             await addAnnotationService(selectedImage.id, []);
 
             await Sleep(10);
+            clearAnnotations();
             setIsLoadingSubmit(false);
           }}
         >
@@ -106,11 +111,19 @@ const Categories = () => {
             try {
               await addAnnotationService(selectedImage.id, [
                 {
-                  boundingBoxes: currentBoundingBoxes,
+                  boundingBoxes: currentBoundingBoxes.map((val) => {
+                    return {
+                      topLeftX: Math.min(val.startX, val.endX),
+                      topLeftY: Math.min(val.startY, val.endY),
+                      width: Math.abs(val.endX - val.startX),
+                      height: Math.abs(val.endY - val.startY),
+                    };
+                  }),
                   categoryId: selectedCategory.id,
                 },
               ]);
               setSelectedImage(queueImages[0]);
+              clearAnnotations();
               setQueueImages(queueImages.slice(1));
             } catch (err) {
               alert(err);

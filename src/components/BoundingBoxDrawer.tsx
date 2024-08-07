@@ -1,20 +1,18 @@
-import React, { useRef, useState, useEffect, MouseEvent } from "react";
+import { useRef, useState, useEffect, MouseEvent } from "react";
 import useImageAnnotationStore from "../stores/imageAnnotationStore";
-
-type BoundingBox = {
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-};
 
 const BoundingBoxDrawer = () => {
   const imgWrapperRef = useRef<HTMLDivElement>(null);
-  const [boundingBox, setBoundingBox] = useState<BoundingBox | null>(null);
   const [isAnnotate, setIsAnnotate] = useState<boolean>(false);
   const addBoundingBox = useImageAnnotationStore(
     (state) => state.addBoundingBox
   );
+
+  const updateBoundingBox = useImageAnnotationStore(
+    (state) => state.updateBoundingBox
+  );
+
+  const boundingBoxes = useImageAnnotationStore((state) => state.boundingBoxes);
 
   const selectedImage = useImageAnnotationStore((state) => state.selectedImage);
 
@@ -29,14 +27,14 @@ const BoundingBoxDrawer = () => {
     const startY = e.clientY - rect.top;
 
     // Initialize the bounding box state
-    setBoundingBox({ startX, startY, endX: startX, endY: startY });
+    addBoundingBox({ startX, startY, endX: startX, endY: startY });
     setIsAnnotate(true);
   };
 
   // Handle mouse move event to update the bounding box dimensions
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (!boundingBox || !imgWrapperRef.current) return;
+    if (!imgWrapperRef.current) return;
 
     // If not in annotation mode, means no need to update the bounding box dimensions
     if (!isAnnotate) return;
@@ -47,9 +45,9 @@ const BoundingBoxDrawer = () => {
     const currentY = e.clientY - rect.top;
 
     // Update the bounding box dimensions state
-    setBoundingBox({
-      startX: boundingBox.startX,
-      startY: boundingBox.startY,
+    updateBoundingBox({
+      startX: boundingBoxes[boundingBoxes.length - 1].startX,
+      startY: boundingBoxes[boundingBoxes.length - 1].startY,
       endX: currentX,
       endY: currentY,
     });
@@ -58,14 +56,6 @@ const BoundingBoxDrawer = () => {
   // Handle mouse up event to finalize the bounding box,
   // so the annotate only created by click and drag
   const handleMouseUp = () => {
-    if (boundingBox) {
-      addBoundingBox({
-        topLeftX: Math.min(boundingBox.startX, boundingBox.endX),
-        topLeftY: Math.min(boundingBox.startY, boundingBox.endY),
-        width: Math.abs(boundingBox.endX - boundingBox.startX),
-        height: Math.abs(boundingBox.endY - boundingBox.startY),
-      });
-    }
     setIsAnnotate(false);
   };
 
@@ -79,7 +69,7 @@ const BoundingBoxDrawer = () => {
       document.removeEventListener("mouseup", handleMouseUpDocument);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boundingBox]);
+  }, []);
 
   return (
     <div
@@ -102,18 +92,20 @@ const BoundingBoxDrawer = () => {
         draggable={"false"}
         alt="Placeholder for uploaded image"
       />
-      {boundingBox && (
-        <div
-          style={{
-            position: "absolute",
-            border: "2px solid red",
-            left: `${Math.min(boundingBox.startX, boundingBox.endX)}px`,
-            top: `${Math.min(boundingBox.startY, boundingBox.endY)}px`,
-            width: `${Math.abs(boundingBox.endX - boundingBox.startX)}px`,
-            height: `${Math.abs(boundingBox.endY - boundingBox.startY)}px`,
-          }}
-        />
-      )}
+      {boundingBoxes.map((val) => {
+        return (
+          <div
+            style={{
+              position: "absolute",
+              border: "2px solid red",
+              left: `${Math.min(val.startX, val.endX)}px`,
+              top: `${Math.min(val.startY, val.endY)}px`,
+              width: `${Math.abs(val.endX - val.startX)}px`,
+              height: `${Math.abs(val.endY - val.startY)}px`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 };

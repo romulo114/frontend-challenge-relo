@@ -1,10 +1,10 @@
 import { create } from "zustand";
 
 type BoundingBox = {
-  topLeftX: number;
-  topLeftY: number;
-  width: number;
-  height: number;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
 };
 
 type ImageQueue = {
@@ -26,6 +26,7 @@ type ImageAnnotationState = {
   setSelectedImage: (image: ImageQueue) => void;
   setCategory: (category: Category) => void;
   addBoundingBox: (boundingBox: BoundingBox) => void;
+  updateBoundingBox: (boundingBox: BoundingBox) => void;
   clearAnnotations: () => void;
 };
 
@@ -37,13 +38,19 @@ const useImageAnnotationStore = create<ImageAnnotationState>((set) => ({
   setQueueImages: (images) => set({ queueImages: images }),
   setSelectedImage: (image) => set({ selectedImage: image }),
   setCategory: (category) => set({ category }),
-  addBoundingBox: (boundingBox) =>
+  addBoundingBox: (boundingBox) => {
     set(() => ({
       //   boundingBoxes: [...state.boundingBoxes, boundingBox], uncomment when need to able multiple bounding box
       boundingBoxes: [boundingBox],
-    })),
-  clearAnnotations: () =>
-    set({ boundingBoxes: [], selectedImage: null, category: null }),
+    }));
+  },
+  updateBoundingBox: (boundingBox) => {
+    set(() => ({
+      //   boundingBoxes: [...state.boundingBoxes, boundingBox], uncomment when need to able multiple bounding box
+      boundingBoxes: [boundingBox],
+    }));
+  },
+  clearAnnotations: () => set({ boundingBoxes: [], category: null }),
 }));
 
 export default useImageAnnotationStore;
