@@ -77,10 +77,6 @@ const BoundingBoxDrawer = () => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       className="image-container"
-      style={{
-        position: "relative",
-        userSelect: "none",
-      }}
       draggable={"false"}
     >
       <img

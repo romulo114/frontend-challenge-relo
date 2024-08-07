@@ -24,6 +24,7 @@ body {
   align-items: center;
   overflow: hidden;
   position: relative;
+  userselect: none;
 }
 .image-container img {
   max-width: 100%;

@@ -13,7 +13,7 @@ const categoriesService = async () => {
     return res.data as Category[];
   } catch (err) {
     console.log(err);
-    alert(err);
+    alert("Something wrong happen");
   }
 };
 

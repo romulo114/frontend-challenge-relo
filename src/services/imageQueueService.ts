@@ -13,7 +13,7 @@ const imageQueueService = async () => {
     return res.data as ImageQueue[];
   } catch (err) {
     console.log(err);
-    alert(err);
+    alert("Something wrong happen");
   }
 };
 

@@ -4,9 +4,8 @@ import useImageAnnotationStore from "../../stores/imageAnnotationStore";
 import addAnnotationService from "../../services/annotationsService";
 
 const SubmitButton = () => {
-  const { submitFetchLoading, setSubmitFetchLoading } = useSidebarStore(
-    (state) => state
-  );
+  const { submitFetchLoading, setSubmitFetchLoading, discardFetchLoading } =
+    useSidebarStore((state) => state);
 
   const {
     selectedImage,
@@ -21,7 +20,11 @@ const SubmitButton = () => {
     <button
       type="button"
       disabled={
-        !selectedImage || !selectedCategory || currentBoundingBoxes.length === 0
+        !selectedImage ||
+        !selectedCategory ||
+        currentBoundingBoxes.length === 0 ||
+        submitFetchLoading ||
+        discardFetchLoading
       }
       onClick={async (e) => {
         e.preventDefault();
@@ -57,6 +60,7 @@ const SubmitButton = () => {
 
         await Sleep(10);
         setSubmitFetchLoading(false);
+        alert("Submit Success");
       }}
     >
       {submitFetchLoading ? "Loading ..." : "Confirm"}
